@@ -31,7 +31,7 @@ export function LoginSignUp({
   setSignUp,
   Submit,
 }: {
-  previous: string | {},
+  previous: string | null,
   login: boolean,
   signUp: boolean,
   emailInputRef: RefObject<HTMLInputElement | null>,

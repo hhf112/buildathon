@@ -1,4 +1,3 @@
-import authRoutes from "./auth.routes.js";
 import { Request, Response, Router } from 'express';
 
 const router = Router();
@@ -11,7 +10,6 @@ router.get("/", (req: Request, res: Response) => {
   return;
 })
 
-router.use("/auth", authRoutes);
 
 
 router.use((req: Request, res: Response) => {

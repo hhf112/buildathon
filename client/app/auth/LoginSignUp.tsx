@@ -11,10 +11,10 @@ function InputBox({ ref,
   imgSrc: string,
   placeholder: string
 }) {
-  return <div className="flex items-stretch h-12">
-    <img src={imgSrc} className=" my-1 mx-1" />
+  return <div className="flex justify-center h-12">
+    <img src={imgSrc} className=" my-1 mx-1 " />
     <input ref={ref} type={type} id="email" placeholder={placeholder}
-      className="w-65  p-4 border border-neutral-500 my-1 mx-1 rounded-xl focus:border-cyan-100" />
+      className="p-3 border border-neutral-500 my-1 mx-1 font-serif text-sm rounded-xl focus:border-cyan-100" />
   </div>
 }
 
@@ -50,18 +50,18 @@ export function LoginSignUp({
   }, [])
 
   return (
-    <div className={`bg-white relative flex flex-col w-2/6 h-3/5 items-center justify-center 
-  border-2 border-neutral-300 rounded-xl shadow-xl p-5
+    <div className={`bg-white flex flex-col items-center justify-center 
+    p-5
 ${formMount ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"} transform duration-500
- transition delay-100`}>
+ transition delay-100 `}>
 
       {/*Top Text*/}
-      <div className="prose prose-sm absolute  top-0 m-4">
+      <div className="m-4">
         <h3 className={`hover:-translate-y-1 transition delay-75 text-neutral-700
           transform duration-1000 
 ${formMount ? "opacity-100" : "opacity-0"}`}>
-          {login ? "Don't have an account?" : "Already have an account?"}
-          <a className="text-amber-300 font-semibold cursor-pointer"
+          <p className="text-sm text-center font-serif">{login ? "Authentication is required for proceeding further." : "Already have an account?"}</p>
+          <a className="text-amber-500 cursor-pointer"
             onClick={() => {
               if (login) {
                 setLogin(false);
@@ -72,25 +72,28 @@ ${formMount ? "opacity-100" : "opacity-0"}`}>
                 setSignUp(false);
               }
             }}>
-            {login ? "Sign up today!" : "Login!"}
+            <p className="text-sm text-center font-serif"> {login ? "Don't have an account? Sign up for one-on-one consulting" : "Continue with your details"} </p>
           </a>
         </h3>
       </div>
 
-      <img src="/unlock.png" className={`animate-bounce w-15 h-15 object-fill m-2
+      <img src="/unlock.png" className={`animate-bounce w-15 h-15 object-fill m-3
     ${formMount ? "opacity-100" : "opacity-0"} transform duration-1000 transition delay-1000`} />
 
-      <h3 className="text-neutral-700 my-2 font-semibold">
-        {login ? "Login is required to access further content" :
-          "access the best coding platform today!"}
-      </h3>
-
-      <InputBox type="email" ref={emailInputRef} imgSrc="/mail.png" placeholder="your email goes here" />
+      <InputBox  type="email" ref={emailInputRef} imgSrc="/mail.png" placeholder="your email goes here" />
 
       {signUp && <InputBox type="text" ref={usernameInputRef} imgSrc="/user.png" placeholder="your username goes here" />}
 
       <InputBox type="password" ref={passwordInputRef} imgSrc="/globe.png" placeholder="your password goes here" />
 
+
+      <div>
+        <input type="radio" name="auth" value="customer"/>
+        <label htmlFor="customer" className="font-serif text-sm"> I'm a customer who would like consultance</label> <br/>
+        <input type="radio" name="auth" value="admin"/>
+        <label htmlFor="auth" className="text-sm font-serif"> Not a customer</label>
+
+      </div>
       {/*Submit*/}
       <TypeLoginButton
         display={(login ? "Login" : "SignUp")}

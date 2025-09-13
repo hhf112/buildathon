@@ -8,6 +8,7 @@ import { Disclaimer, TypeLoginButton } from "./components";
 import { useRouter } from "next/navigation";
 import { Submitted } from "./Submitted";
 import { LoginSignUp } from "./LoginSignUp";
+import Link from "next/link";
 
 const authentication: string = "api/auth";
 
@@ -96,19 +97,15 @@ export default function Auth() {
   /* component */
   // console.log(sessionToken);
   return (
-    <div> {/*BG*/}
-
-      <div className="fixed flex justify-center items-center w-full">
-        <button className="m-5 text-4xl rounded-full p-5 bg-white text-neutral-800 
-           font-bold border-4 font-Inter z-5 shadow cursor-pointer
-           hover:bg-red-400 hover:-translate-x-5
-          transition-all transform duration-100 delay-75"
-          onClick={() => router.push(data || "/")}>
-          NO. TAKE ME BACK.
-        </button>
+    <div className="flex flex-col justify-center items-center h-screen"> {/*BG*/}
+      <div className="flex justify-center items-center w-full">
+        <Link href="/" className="font-serif text-sm text-center text-red-900 underline">
+          I'm not interested and don't wish to continue. <br/>
+          Take me back to the homepage.
+        </Link>
       </div>
 
-      <div className="flex w-full h-screen justify-center items-center">
+      <div className="flex w-full  justify-center items-center">
         {submitted || sessionToken ? <Submitted
           login={login}
           previous={data}
@@ -132,9 +129,9 @@ export default function Auth() {
           setSignUp={setSignUp}
           Submit={Submit}
         />}
-
-        {errMsg.message.length != 0 && <Disclaimer display={errMsg.message} colorClass={errMsg.color} />}
       </div>
+
+      {errMsg.message.length != 0 && <Disclaimer display={errMsg.message} colorClass={errMsg.color} />}
     </div>
   )
 }

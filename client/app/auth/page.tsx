@@ -6,7 +6,6 @@ import { dataContext } from "@/contexts/DataContextProvider";
 
 import { Disclaimer, TypeLoginButton } from "./components";
 import { useRouter } from "next/navigation";
-import { Submitted } from "./Submitted";
 import { LoginSignUp } from "./LoginSignUp";
 import Link from "next/link";
 
@@ -18,15 +17,15 @@ export default function Auth() {
   const router = useRouter();
 
   const { data }: { data: any } = useContext(dataContext);
-  const emailInputRef = useRef<HTMLInputElement>(null)
-  const passwordInputRef = useRef<HTMLInputElement>(null)
-  const usernameInputRef = useRef<HTMLInputElement>(null)
+  const emailInputRef = useRef<HTMLInputElement>(null);
+  const passwordInputRef = useRef<HTMLInputElement>(null);
+  const numberInputRef = useRef<HTMLInputElement>(null);
+  const radioInputRef = useRef<HTMLInputElement>(null);
 
 
   /* states */
   const [login, setLogin] = useState<boolean>(true);
   const [signUp, setSignUp] = useState<boolean>(false);
-  const [submitted, setSubmitted] = useState<boolean>(false);
   const [errMsg, setErrMsg] = useState<{
     message: string,
     color: string,
@@ -37,24 +36,23 @@ export default function Auth() {
   const [loader, setLoader] = useState<boolean>(false);
 
   useEffect(() => {
-    if (sessionToken) router.push(data || '/');
+    if (sessionToken) router.push(data || '/profile');
   }, [sessionToken]);
 
   /*functions*/
   async function Submit() {
-    const username = usernameInputRef.current?.value;
+    const number = numberInputRef.current?.value;
     const email = emailInputRef.current?.value;
     const password = passwordInputRef.current?.value;
 
     const req = authentication + (login ? "" : "/register");
-    setTimeout(() => setErrMsg({ message: "It is taking longer than usual please wait!", color: "amber" }),
+    const timeout = setTimeout(() => setErrMsg({ message: "It is taking longer than usual please wait!", color: "amber" }),
       5000)
     setErrMsg({
       message: "Loading ...",
       color: "amber",
     })
 
-    console.log("username:", username);
     const post = await fetch(req, {
       method: "POST",
       headers: {
@@ -62,15 +60,17 @@ export default function Auth() {
         "authorization": `Bearer ${sessionToken}`,
       },
       body: JSON.stringify({
-        username: username,
+        number: number,
         email: email,
         password: password,
+        access: radioInputRef.current?.value == "customer" ? 1 : 0
       }),
       credentials: "include",
     })
 
+    clearTimeout(timeout);
     const postJSON = await post.json();
-    // console.log(postJSON);
+
     if (!post.ok) {
       setErrMsg({
         message: postJSON.message,
@@ -84,13 +84,16 @@ export default function Auth() {
     });
 
     if (login) {
-      const user = postJSON.user;
+      if (postJSON.user.access == 1) {
+        router.push("/admin");
+      } else router.push(data || '/');
       setSessionToken(postJSON.accessToken);
-      // console.log("user: ", postJSON.user);
       setUser(postJSON.user);
-      setSubmitted(true);
     } if (signUp) {
-      setSubmitted(true);
+      setErrMsg({
+        message: "Account successfully created. Login to continue.",
+        color: "green",
+      })
     }
   }
 
@@ -98,37 +101,33 @@ export default function Auth() {
   // console.log(sessionToken);
   return (
     <div className="flex flex-col justify-center items-center h-screen"> {/*BG*/}
-      <div className="flex justify-center items-center w-full">
-        <Link href="/" className="font-serif text-sm text-center text-red-900 underline">
-          I'm not interested and don't wish to continue. <br/>
-          Take me back to the homepage.
-        </Link>
+      <div className="fixed w-auto h-auto top-0  my-2.5 mx-2.5">
+        <img src="/brokerboots.jpg" className="w-full h-full object-fill" />
       </div>
 
-      <div className="flex w-full  justify-center items-center">
-        {submitted || sessionToken ? <Submitted
-          login={login}
-          previous={data}
-          signUp={signUp}
-          setSignUp={setSignUp}
-          setLogin={setLogin}
-          setSubmitted={setSubmitted}
-          Submit={Submit}
-          Logout={Logout}
+      {/*
+      <div className="flex justify-center items-center w-full">
+        <Link href="/" className="font-serif text-sm text-center text-red-900 underline">
+          I'm not interested and don't wish to continue. <br />
+        </Link>
+      </div>
+      */}
 
-        /> : <LoginSignUp
+      <div className="flex w-full  justify-center items-center">
+        <LoginSignUp
+          radioInputRef={radioInputRef}
           previous={data}
           login={login}
           signUp={signUp}
           emailInputRef={emailInputRef}
           passwordInputRef={passwordInputRef}
-          usernameInputRef={usernameInputRef}
+          numberInputRef={numberInputRef}
           errMsg={errMsg}
           loader={loader}
           setLogin={setLogin}
           setSignUp={setSignUp}
           Submit={Submit}
-        />}
+        />
       </div>
 
       {errMsg.message.length != 0 && <Disclaimer display={errMsg.message} colorClass={errMsg.color} />}

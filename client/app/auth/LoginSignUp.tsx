@@ -23,20 +23,22 @@ export function LoginSignUp({
   signUp,
   emailInputRef,
   passwordInputRef,
-  usernameInputRef,
+  numberInputRef,
   errMsg,
   loader,
   previous,
   setLogin,
   setSignUp,
   Submit,
+  radioInputRef,
 }: {
+  radioInputRef: RefObject<HTMLInputElement | null>,
   previous: string | null,
   login: boolean,
   signUp: boolean,
   emailInputRef: RefObject<HTMLInputElement | null>,
   passwordInputRef: RefObject<HTMLInputElement | null>,
-  usernameInputRef: RefObject<HTMLInputElement | null>,
+  numberInputRef: RefObject<HTMLInputElement | null>,
   errMsg: { message: string, color: string },
   loader: boolean,
   setLogin: Dispatch<SetStateAction<boolean>>,
@@ -72,7 +74,7 @@ ${formMount ? "opacity-100" : "opacity-0"}`}>
                 setSignUp(false);
               }
             }}>
-            <p className="text-sm text-center font-serif"> {login ? "Don't have an account? Sign up for one-on-one consulting" : "Continue with your details"} </p>
+            <p className="text-sm text-center font-serif"> {login ? "Don't have an account? Sign up for one-on-one consulting" : "Continue to Login with your details"} </p>
           </a>
         </h3>
       </div>
@@ -80,20 +82,22 @@ ${formMount ? "opacity-100" : "opacity-0"}`}>
       <img src="/unlock.png" className={`animate-bounce w-15 h-15 object-fill m-3
     ${formMount ? "opacity-100" : "opacity-0"} transform duration-1000 transition delay-1000`} />
 
-      <InputBox  type="email" ref={emailInputRef} imgSrc="/mail.png" placeholder="your email goes here" />
+      <InputBox type="email" ref={emailInputRef} imgSrc="/mail.png" placeholder="your email goes here" />
 
-      {signUp && <InputBox type="text" ref={usernameInputRef} imgSrc="/user.png" placeholder="your username goes here" />}
+      {signUp && <InputBox type="text" ref={numberInputRef} imgSrc="/user.png" placeholder="your number goes here" />}
 
       <InputBox type="password" ref={passwordInputRef} imgSrc="/globe.png" placeholder="your password goes here" />
 
 
-      <div>
-        <input type="radio" name="auth" value="customer"/>
-        <label htmlFor="customer" className="font-serif text-sm"> I'm a customer who would like consultance</label> <br/>
-        <input type="radio" name="auth" value="admin"/>
-        <label htmlFor="auth" className="text-sm font-serif"> Not a customer</label>
+      {signUp &&
+        <div>
+          <input ref={radioInputRef} type="radio" name="auth" value="customer" />
+          <label htmlFor="customer" className="font-serif text-sm"> I'm a customer who would like consultance</label> <br />
+          <input type="radio" name="auth" value="admin" />
+          <label htmlFor="auth" className="text-sm font-serif"> Not a customer</label>
 
-      </div>
+        </div>
+      }
       {/*Submit*/}
       <TypeLoginButton
         display={(login ? "Login" : "SignUp")}

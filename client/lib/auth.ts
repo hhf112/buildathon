@@ -6,21 +6,21 @@ import { NextResponse } from 'next/server';
 
 
 function generateAccessToken(user: {
-  username: string,
+  number: string,
   email: string
 }) {
   return jwt.sign({
-    username: user.username,
+    number: user.number,
     email: user.email
   }, process.env.JWT_SECRET as string, { expiresIn: "4h" })
 }
 
 function generateRefreshToken(user: {
-  username: string,
+  number: string,
   email: string
 }) {
   return jwt.sign({
-    username: user.username,
+    number: user.number,
     email: user.email
   }, process.env.REFRESH_SECRET as string)
 }
@@ -40,7 +40,7 @@ export async function loginHandler(email: string, password: string) {
     if (!result)
       return NextResponse.json({
         success: false,
-        message: "Invalid username or password"
+        message: "Invalid number or password"
       }, { status: 401 });
 
     const access = generateAccessToken(user);
@@ -56,7 +56,7 @@ export async function loginHandler(email: string, password: string) {
       user: user,
     }, { status: 200 });
 
-    return res.cookies.set("refreshToken", refreshToken, {
+    res.cookies.set("refreshToken", refreshToken, {
       httpOnly: true,
       secure: true,
       sameSite: "none",
@@ -64,7 +64,7 @@ export async function loginHandler(email: string, password: string) {
       maxAge: 30 * 24 * 60 * 60 * 1000  // 30 days
     })
 
-
+    return res;
   } catch (err) {
     console.log(err);
     return NextResponse.json({
@@ -74,15 +74,16 @@ export async function loginHandler(email: string, password: string) {
   }
 }
 
-export const registerHandler = async (username: string, password: string, email: string) => {
+export const registerHandler = async (number: string, password: string, email: string, access: number) => {
   const hashingRounds = 12;
   try {
     const hashedPassword = await bcrypt.hash(password, hashingRounds);
     const userResponse = {
-      username: username,
+      number: number,
       password: hashedPassword,
       email: email,
-      jwt_refreshToken: null
+      jwt_refreshToken: null,
+      access: access
     }
 
     await User.create(userResponse);

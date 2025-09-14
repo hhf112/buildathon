@@ -12,7 +12,7 @@ if (!authentication) {
 export interface User {
   // isValid: Boolean,
   _id: string,
-  username: string,
+  number: string,
   password: string,
   email: string,
   userId: string,
@@ -20,6 +20,7 @@ export interface User {
     id: string,
     status: string,
   }[],
+  access: number,
 }
 
 export interface problem {

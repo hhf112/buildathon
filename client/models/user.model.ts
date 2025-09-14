@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 export interface UserType {
-  username: string,
+  number: string,
   password: string,
   email: string,
   createdAt?: Date,
@@ -10,9 +10,9 @@ export interface UserType {
 }
 
 const userSchema = new mongoose.Schema({
-  username: {
+  number: {
     type: String,
-    required: [true, "Username is required"],
+    required: [true, "number is required"],
     trim: true
   },
   password: {
@@ -30,6 +30,18 @@ const userSchema = new mongoose.Schema({
   jwt_refreshToken: {
     type: String,
     required: false,
+  },
+  access: {
+    type: Number, //  insurer or customer.
+    required: true
+  },
+  twitter: {
+    type: {
+      username: String,
+      password: String,
+    },
+    required: false,
+    default: null
   }
 },
   {

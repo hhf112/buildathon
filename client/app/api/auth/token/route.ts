@@ -12,5 +12,5 @@ export async function POST(req: NextRequest) {
   }
 
   const res = await tokenHandler(refreshToken);
-  return NextResponse.json(res);
+  return res;
 }

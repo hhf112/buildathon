@@ -8,12 +8,12 @@ import { DBConnection } from "@/lib/db";
 // register
 export async function POST(req: NextRequest) {
   await DBConnection();
-  const { email, password, username} = await req.json();
-  if (!email || !password || !username) NextResponse.json({
+  const { email, password, number, access} = await req.json();
+  if (!email || !password || !number || !access) NextResponse.json({
     success: false,
     message: "All fields are required"
   }, {status: 400});
-  const res = await registerHandler(username, email, password);
+  const res = await registerHandler(number, email, password, access);
   return res;
 }
 

@@ -30,13 +30,13 @@ export function Submitted({
   useEffect(() => setMountDoor(true), []);
 
   return (
-    <div className="bg-white relative flex flex-col w-2/6 h-3/5 items-center justify-center 
-      rounded-xl border border-neutral-300 shadow-xl p-15">
+    <div className="bg-white flex flex-col   items-center justify-center 
+        p-15">
 
       {/*Top Text*/}
       <div className="prose prose-sm absolute  top-0 m-4">
         <h3 className="text-neutral-700">
-          {`Welcome back ${user?.username}!`}
+          {`Welcome back ${user?.number}!`}
         </h3>
       </div>
 
@@ -53,7 +53,7 @@ export function Submitted({
         <div className="flex">
           <TypeLoginButton
             display="Back to where you left off!"
-            doThisAsync={() => { console.log("previous: ", previous); router.push(previous || "/") }}
+            doThisAsync={() => { router.push(previous || "/") }}
           />
           <TypeLoginButton
             display="Logout"

@@ -12,10 +12,14 @@ import { DBConnection } from "@/lib/db";
 export async function POST(req: NextRequest) {
   await DBConnection();
   const { email, password } = await req.json();
-
+  if (!email || !password) {
+    return NextResponse.json({
+      success: false,
+      message: "No email or password found"
+    }, { status: 400 });
+  }
   const res = await loginHandler(email, password);
-
-  return NextResponse.json(res);
+  return res;
 }
 
 // token refresh

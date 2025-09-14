@@ -5,14 +5,16 @@ import { Home } from './Home';
 import AIMarketing from './Marketing';
 import { useRouter } from 'next/navigation';
 import Marketing from './Marketing';
+import { Clients } from './Clients';
 
 function ListItem({ title, setShow, set }: { setShow: Dispatch<SetStateAction<number>>, title: string, set: number }) {
-  const [mounted, setMounted] = useState(false);
+  const [mounted, setMount] = useState(false);
+  const [clientChatID, setClientChatID] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    setMounted(true);
-    return () => setMounted(false);
+    setMount(true);
+    return () => setMount(false);
   }, []);
 
   return (
@@ -31,10 +33,10 @@ function ListItem({ title, setShow, set }: { setShow: Dispatch<SetStateAction<nu
 function SideBar({ setShow }: { setShow: Dispatch<SetStateAction<number>> }) {
   const { user } = useContext(sessionContext);
 
-  const [mounted, setMounted] = useState(false);
+  const [mounted, setMount] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
-  useEffect(() => setMounted(true), []);
+  useEffect(() => setMount(true), []);
   useEffect(() => {
     setTimeout(() => setExpanded(true), 200);
   }, []);
@@ -55,7 +57,7 @@ function SideBar({ setShow }: { setShow: Dispatch<SetStateAction<number>> }) {
             <ListItem title="Marketing" set={0} setShow={setShow} />
             <ListItem title="Profile" set={2} setShow={setShow} />
             <ListItem title="Calendar" set={3} setShow={setShow} />
-            <ListItem title="Chats" set={4} setShow={setShow} />
+            <ListItem title="Clients" set={4} setShow={setShow} />
           </div>
         </>
       )}
@@ -126,13 +128,14 @@ export default function Dashboard() {
           <img src="/globe.png" className="w-full h-full object-contain" />
         </div>
         <div className="inline-block ml-2 h-full">
-          <img src="/turtlemint-logo-1.webp" className="max-h-full object-contain" />
+          <img src="/man.png" className="max-h-full object-contain" />
         </div>
       </div>
 
       {/* ✅ show will now correctly switch components */}
       {show === 0 && <Marketing />}
       {show === 1 && <Home />}
+      {show === 4 && <Clients setShow={setShow}/>}
       {isOpen && <SideBar setShow={setShow} />}
     </div>
   );

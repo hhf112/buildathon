@@ -25,7 +25,6 @@ export default function Auth() {
 
   /* states */
   const [login, setLogin] = useState<boolean>(true);
-  const [signUp, setSignUp] = useState<boolean>(false);
   const [errMsg, setErrMsg] = useState<{
     message: string,
     color: string,
@@ -45,7 +44,6 @@ export default function Auth() {
     const email = emailInputRef.current?.value;
     const password = passwordInputRef.current?.value;
 
-    const req = authentication + (login ? "" : "/register");
     const timeout = setTimeout(() => setErrMsg({ message: "It is taking longer than usual please wait!", color: "amber" }),
       5000)
     setErrMsg({
@@ -53,7 +51,7 @@ export default function Auth() {
       color: "amber",
     })
 
-    const post = await fetch(req, {
+    const post = await fetch("/api/auth", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -83,18 +81,11 @@ export default function Auth() {
       color: "amber",
     });
 
-    if (login) {
-      if (postJSON.user.access == 1) {
-        router.push("/admin");
-      } else router.push(data || '/');
-      setSessionToken(postJSON.accessToken);
-      setUser(postJSON.user);
-    } if (signUp) {
-      setErrMsg({
-        message: "Account successfully created. Login to continue.",
-        color: "green",
-      })
-    }
+    if (postJSON.user.access == 1) {
+      router.push("/admin");
+    } else router.push(data || '/');
+    setSessionToken(postJSON.accessToken);
+    setUser(postJSON.user);
   }
 
   /* component */
@@ -105,27 +96,17 @@ export default function Auth() {
         <img src="/brokerboots.jpg" className="w-full h-full object-fill" />
       </div>
 
-      {/*
-      <div className="flex justify-center items-center w-full">
-        <Link href="/" className="font-serif text-sm text-center text-red-900 underline">
-          I'm not interested and don't wish to continue. <br />
-        </Link>
-      </div>
-      */}
-
       <div className="flex w-full  justify-center items-center">
         <LoginSignUp
           radioInputRef={radioInputRef}
           previous={data}
           login={login}
-          signUp={signUp}
           emailInputRef={emailInputRef}
           passwordInputRef={passwordInputRef}
           numberInputRef={numberInputRef}
           errMsg={errMsg}
           loader={loader}
           setLogin={setLogin}
-          setSignUp={setSignUp}
           Submit={Submit}
         />
       </div>

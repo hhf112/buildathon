@@ -7,10 +7,7 @@ export async function GET(req: NextRequest) {
     success: false,
     message: "Email not provided"
   }, { status: 400 });
-
-  return  NextResponse.json({
-    success: true,
-
-  }, { status: 200 });
+  
+  const res = checkTwitter(email);
+  return res;
 }
-

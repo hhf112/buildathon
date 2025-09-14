@@ -33,7 +33,7 @@ const clientSchema = new mongoose.Schema({
   numner: {
     type: String,
     required: true,
-  }
+  },
   gender: {
     type: String,
     required: true,

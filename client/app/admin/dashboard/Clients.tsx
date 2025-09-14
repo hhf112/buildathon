@@ -4,6 +4,7 @@ import { Disclaimer } from "../../auth/components"
 import { Combo } from "next/font/google";
 import { ComboBox } from "./ComboBox";
 import { ClientSegmentRoot } from "next/dist/client/components/client-segment";
+import { SearchClients } from "./SearchClients";
 
 
 export function Clients({ setShow }: { setShow: Dispatch<SetStateAction<number>> }) {
@@ -170,6 +171,9 @@ export function Clients({ setShow }: { setShow: Dispatch<SetStateAction<number>>
   ]);
 
   const [filter, setFilter] = useState("All");
+  const [clientSearchArr, setClientSearchArr] = useState<{ label: string, value: string }[]>([])
+  const [searchedClient, setSearchedClient] = useState("");
+
 
 
   useEffect(() => {
@@ -195,6 +199,10 @@ export function Clients({ setShow }: { setShow: Dispatch<SetStateAction<number>>
             }
           })
         )
+
+        setClientSearchArr(prev => resp_json.clients.map((client: ClientType) => {
+          return { label: client.name, value: client.name }
+        }));
         errMsg.message = "";
         errMsg.color = "green";
       }
@@ -208,17 +216,28 @@ export function Clients({ setShow }: { setShow: Dispatch<SetStateAction<number>>
       </button>
 
       <div className="flex justify-between items-center">
-        <ComboBox 
-        frameworks={clientSearch}
-        value={filter}
-        setValue={setFilter}
+        <ComboBox
+          frameworks={clientSearch}
+          value={filter}
+          setValue={setFilter}
+          notOpened={`Show:${filter}`}
+          opened={filter}
+        />
+
+        <ComboBox
+          frameworks={clientSearchArr}
+          value={filter}
+          setValue={setFilter}
+          opened={"Search by name ..."}
+          notOpened={searchedClient}
         />
       </div>
 
       <div className="grid grid-cols-3 gap-2">
-        {clients.map(client => {
+        {clients.map((client, index) => {
           {/* client card */ }
           return <div
+            key={index}
             className="m-1 p-1 flex flex-col justify-center items-center w-full border-neutral-200 rounded-lg shadow-xl border py-2">
             <div className="m-1 w-10 h-10">
               <img

@@ -42,13 +42,15 @@ const frameworks = [
   },
 ]
 
-export function ComboBox({ frameworks, value, setValue}: {
+export function ComboBox({ frameworks, value, setValue, notOpened, opened}: {
   frameworks: {
     label: string,
     value: string,
   }[],
   value: string,
   setValue: React.Dispatch<React.SetStateAction<string>>,
+  notOpened: string,
+  opened: string,
 }) {
   const [open, setOpen] = React.useState(false)
 
@@ -63,13 +65,13 @@ export function ComboBox({ frameworks, value, setValue}: {
         >
           {value
             ? frameworks.find((framework) => framework.value === value)?.label
-            : `Show:${value}`}
+            : opened}
           <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <Command>
-          <CommandInput placeholder="Search ..." />
+          <CommandInput placeholder={opened}/>
           <CommandList>
             <CommandEmpty>No framework found.</CommandEmpty>
             <CommandGroup>

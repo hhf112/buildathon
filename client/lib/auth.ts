@@ -110,121 +110,119 @@ export const registerHandler = async (number: string, password: string, email: s
 }
 
 export const logoutHandler = async (refreshToken: string) => {
-  jwt.verify(refreshToken, process.env.REFRESH_SECRET as string, async (err: any, user: any) => {
-    if (err) {
-      return NextResponse.json({
-        success: false,
-        message: "Invalid refresh token"
-      }, { status: 401 });
-      return;
-    }
-
-    try {
-      const result = await User.findOne({ jwt_refreshToken: refreshToken }).exec();
-      if (result == null) {
-        return NextResponse.json({
+  return new Promise((resolve) => {
+    jwt.verify(refreshToken, process.env.REFRESH_SECRET as string, async (err: any, user: any) => {
+      if (err) {
+        return resolve(NextResponse.json({
           success: false,
           message: "Invalid refresh token"
-        }, { status: 401 });
-        return;
+        }, { status: 401 }));
       }
 
-      await User.updateOne({ _id: result._id }, { jwt_refreshToken: null });
+      try {
+        const result = await User.findOne({ jwt_refreshToken: refreshToken }).exec();
+        if (!result) {
+          return resolve(NextResponse.json({
+            success: false,
+            message: "Invalid refresh token"
+          }, { status: 401 }));
+        }
 
-      const res = NextResponse.json({
-        success: true,
-      }, { status: 200 });
+        await User.updateOne({ _id: result._id }, { jwt_refreshToken: null });
 
-      res.cookies.set("refreshToken", "", {
-        path: '/',
-        httpOnly: true,
-        secure: true,
-        sameSite: 'none',
-        maxAge: 0
-      });
+        const res = NextResponse.json({ success: true }, { status: 200 });
+        res.cookies.set("refreshToken", "", {
+          path: '/',
+          httpOnly: true,
+          secure: true,
+          sameSite: 'none',
+          maxAge: 0
+        });
 
+        return resolve(res);
+      } catch (err) {
+        console.error(err);
+        return resolve(NextResponse.json({
+          success: false,
+          message: "Internal server error"
+        }, { status: 500 }));
+      }
+    });
+  });
+};
 
-    } catch (err) {
-      console.error(err);
-      return NextResponse.json({
-        success: false,
-        message: "Internal server error"
-      });
-    }
-  })
-
-}
 
 export const sessionHandler = async (refreshToken: string) => {
-  jwt.verify(refreshToken, process.env.REFRESH_SECRET as string, async (err: any, user: any) => {
-    if (err) {
-      return NextResponse.json({
-        success: false,
-        message: "Invalid refresh token"
-      }, { status: 401 });
-      return;
-    }
-
-    try {
-      const result = await User.findOne({ jwt_refreshToken: refreshToken }).exec();
-      if (result == null) {
-        return NextResponse.json({
+  return new Promise((resolve) => {
+    jwt.verify(refreshToken, process.env.REFRESH_SECRET as string, async (err: any, user: any) => {
+      if (err) {
+        return resolve(NextResponse.json({
           success: false,
-          message: "Refresh token not found"
-        }, { status: 401 });
-        return;
+          message: "Invalid refresh token"
+        }, { status: 401 }));
       }
 
-      return NextResponse.json({
-        success: true,
-        login: (refreshToken) ? true: false,
-        user: result,
-      }, { status: 200 });
-    }
-    catch (err) {
-      console.error(err);
-      return NextResponse.json({
-        success: false,
-        message: "Internal server error"
-      }, { status: 500 });
-    }
+      try {
+        const result = await User.findOne({ jwt_refreshToken: refreshToken }).exec();
+        if (!result) {
+          return resolve(NextResponse.json({
+            success: false,
+            message: "Refresh token not found"
+          }, { status: 401 }));
+        }
+
+        return resolve(NextResponse.json({
+          success: true,
+          login: !!refreshToken,
+          user: result,
+        }, { status: 200 }));
+      } catch (err) {
+        console.error(err);
+        return resolve(NextResponse.json({
+          success: false,
+          message: "Internal server error"
+        }, { status: 500 }));
+      }
+    });
   });
-}
+};
 
 export const tokenHandler = async (refreshToken: string) => {
-  jwt.verify(refreshToken, process.env.REFRESH_SECRET as string, async (err: any, user: any) => {
-    if (err) {
-      return NextResponse.json({
-        success: false,
-        message: "Invalid refresh token"
-      }, { status: 401 });
-      return;
-    }
-
-    try {
-      const result = await User.findOne({ jwt_refreshToken: refreshToken }).exec();
-      if (result == null) {
-        return NextResponse.json({
+  return new Promise((resolve) => {
+    jwt.verify(refreshToken, process.env.REFRESH_SECRET as string, async (err: any, user: any) => {
+      if (err) {
+        resolve(NextResponse.json({
           success: false,
-          message: "Refresh token not found"
-        }, { status: 401 });
+          message: "Invalid refresh token"
+        }, { status: 401 }));
         return;
       }
 
-      const accessToken = generateAccessToken(result);
+      try {
+        const result = await User.findOne({ jwt_refreshToken: refreshToken }).exec();
+        if (!result) {
+          resolve(NextResponse.json({
+            success: false,
+            message: "Refresh token not found"
+          }, { status: 401 }));
+          return;
+        }
 
-      return NextResponse.json({
-        success: true,
-        accessToken: accessToken,
-        user: result,
-      }, { status: 200 });
+        const accessToken = generateAccessToken(result);
 
-    } catch (err) {
-      console.error(err);
-      return NextResponse.json({
-        success: false,
-        message: "Internal server error"
-      }, { status: 500 });
-    }
-  })
-}
+        resolve(NextResponse.json({
+          success: true,
+          accessToken,
+          user: result,
+        }, { status: 200 }));
+
+      } catch (err) {
+        console.error(err);
+        resolve(NextResponse.json({
+          success: false,
+          message: "Internal server error"
+        }, { status: 500 }));
+      }
+    });
+  });
+};

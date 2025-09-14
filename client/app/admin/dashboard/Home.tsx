@@ -11,6 +11,10 @@ export function Home() {
         <p className=" text-green-600/80 font-Georgia font-bold"> to your Dashboard </p>
         <p className=" text-green-600/80 font-Georgia font-bold">  {user?.number} </p>
       </div>
+
+      <div className="flex w-full bg-white overflow-x-auto">
+
+      </div>
     </div>
   )
 }

@@ -73,26 +73,6 @@ export default function Dashboard() {
   const [show, setShow] = useState(0);
 
   useEffect(() => console.log("show state =", show), [show]);
-  useEffect(() => {
-
-    (async () => {
-      const resp = await fetch("/api/auth/token", {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-      });
-
-      const resp_json = await resp.json();
-      if (!resp_json.accessToken || user?.access == 1) {
-        router.push('/auth');
-      } else {
-        setSessionToken(resp_json.accessToken);
-        setUser(resp_json.user);
-      }
-    })();
-
-  }, [])
 
   return (
     <div

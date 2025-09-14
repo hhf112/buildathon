@@ -1,13 +1,17 @@
 import { ClientType, PolicyType, ReferralType, Client } from "@/lib/client.model"
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
+import { Dispatch, SetStateAction, useEffect, useState, useContext } from "react"
 import { Disclaimer } from "../../auth/components"
 import { Combo } from "next/font/google";
 import { ComboBox } from "./ComboBox";
 import { ClientSegmentRoot } from "next/dist/client/components/client-segment";
 import { SearchClients } from "./SearchClients";
+import { useRouter } from "next/navigation";
+import { dataContext } from "@/contexts/DataContextProvider";
 
 
 export function Clients({ setShow }: { setShow: Dispatch<SetStateAction<number>> }) {
+  const { data, setData } = useContext(dataContext);
+  const router = useRouter();
   const [errMsg, setErrMsg] = useState({
     message: "",
     color: "amber",
@@ -238,7 +242,16 @@ export function Clients({ setShow }: { setShow: Dispatch<SetStateAction<number>>
           {/* client card */ }
           return <div
             key={index}
-            className="m-1 p-1 flex flex-col justify-center items-center w-full border-neutral-200 rounded-lg shadow-xl border py-2">
+            className="m-1 p-1 flex flex-col justify-center items-center w-full border-neutral-200 rounded-lg shadow-xl border py-2"
+            onClick={() => {
+              setData({
+                route: "/admin/dashboard",
+                client: client,
+              });
+              router.push(`/client/${client.email}`)
+
+            }
+            }>
             <div className="m-1 w-10 h-10">
               <img
                 src={client.gender === "male" ? "/man.png" : "/woman.png"}

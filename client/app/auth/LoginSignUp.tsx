@@ -14,7 +14,7 @@ function InputBox({ ref,
   return <div className="flex justify-center h-12">
     <img src={imgSrc} className=" my-1 mx-1 " />
     <input ref={ref} type={type} id="email" placeholder={placeholder}
-      className="p-3 border border-neutral-500 my-1 mx-1 font-serif text-sm rounded-xl focus:border-cyan-100" />
+      className="p-3 border border-neutral-500 my-1 mx-1  text-sm rounded-xl focus:border-cyan-100" />
   </div>
 }
 
